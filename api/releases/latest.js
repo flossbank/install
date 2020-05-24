@@ -9,9 +9,23 @@ async function getLatestReleaseFor (target) {
   return { url, version }
 }
 
+function getTargetlessText () {
+  const targets = ['macos-x86_64', 'linux-x86_64', 'win-x86_64']
+  const urls = targets.map(target => `<a href="?target=${target}">${target}</a>`).join(', ')
+  return `<html><head></head><body><p>target query param required: ${urls}<p></body></html>`
+}
+
 module.exports = async (req, res) => {
-  // const { os, arch } = req.query
-  const target = 'macos-x86_64'
-  const { url, version } = await getLatestReleaseFor(target)
-  res.status(200).send(`${url}\n${version}`)
+  const { target } = req.query
+  if (!target) {
+    res.setHeader('Content-Type', 'text/html')
+    return res.status(200).send(getTargetlessText())
+  }
+  res.setHeader('Content-Type', 'text/plain')
+  try {
+    const { url, version } = await getLatestReleaseFor(target)
+    res.status(200).send(`${url}\n${version}`)
+  } catch (e) {
+    res.status(500).send()
+  }
 }
