@@ -1,5 +1,7 @@
 const github = require('gh-got')
 
+const targets = ['macos-x86_64', 'linux-x86_64', 'win-x86_64']
+
 async function getLatestReleaseFor (target) {
   const { body } = await github('repos/flossbank/cli/releases/latest')
   const { tag_name: version, assets } = body
@@ -10,7 +12,6 @@ async function getLatestReleaseFor (target) {
 }
 
 function getTargetlessText () {
-  const targets = ['macos-x86_64', 'linux-x86_64', 'win-x86_64']
   const urls = targets.map(target => `<a href="?target=${target}">${target}</a>`).join(', ')
   return `<html><head></head><body><p>target query param required: ${urls}<p></body></html>`
 }
