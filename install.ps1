@@ -54,10 +54,6 @@ if ($needInstallToken -And !$FlossbankInstallToken) {
   $FlossbankInstallToken = Read-Host -Prompt 'Please enter install token to continue: '
 }
 
-if (!(Test-Path $BinDir)) {
-  New-Item $BinDir -ItemType Directory | Out-Null
-}
-
 Write-Output ""
 Write-Output "Welcome to Flossbank!"
 Write-Output ""
@@ -75,40 +71,27 @@ Write-Output "You can uninstall at any time by executing 'flossbank uninstall'"
 Write-Output "and these changes will be reverted."
 Write-Output ""
 
-# GitHub requires TLS 1.2
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$Response = Invoke-WebRequest 'https://github.com/flossbank/cli/releases/latest' -UseBasicParsing
-$FlossbankUri = if ($PSVersionTable.PSEdition -eq 'Core') {
-    $Response.Links |
-      Where-Object { $_.href -like "/flossbank/cli/releases/download/*/flossbank-${Target}.zip" } |
-      ForEach-Object { 'https://github.com' + $_.href } |
-      Select-Object -First 1
-  } else {
-    $HTMLFile = New-Object -Com HTMLFile
-    if ($HTMLFile.IHTMLDocument2_write) {
-      $HTMLFile.IHTMLDocument2_write($Response.Content)
-    } else {
-      $ResponseBytes = [Text.Encoding]::Unicode.GetBytes($Response.Content)
-      $HTMLFile.write($ResponseBytes)
-    }
-    $HTMLFile.getElementsByTagName('a') |
-      Where-Object { $_.href -like "about:/flossbank/cli/releases/download/*/flossbank-${Target}.zip" } |
-      ForEach-Object { $_.href -replace 'about:', 'https://github.com' } |
-      Select-Object -First 1
-  }
-
-if (!$FlossbankUri) {
+$Response = Invoke-WebRequest "https://install.flossbank.com/releases/$Target" -UseBasicParsing
+if (!$Response) {
   Write-Output ""
   Write-Output "Error: unable to locate latest release on GitHub. Please try again or email support@flossbank.com for help!"
   return
 }
+$FlossbankAssetInfo = $Response.Content
 
-$FlossbankVersion = $FlossbankUri.Split("/")[7]
+$FlossbankUri = $FlossbankAssetInfo.Split([Environment]::NewLine)[0]
+$FlossbankVersion = $FlossbankAssetInfo.Split([Environment]::NewLine)[1]
 $FlossbankFileName = $FlossbankUri.Split("/")[8]
+
+if (!(Test-Path $BinDir)) {
+  New-Item $BinDir -ItemType Directory | Out-Null
+}
 
 Write-Output "Installing version: $FlossbankVersion"
 Write-Output "  - Downloading $FlossbankFileName..."
 
+# GitHub requires TLS 1.2
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest $FlossbankUri -OutFile $FlossbankZip -UseBasicParsing
 Expand-Archive $FlossbankZip -Destination $BinDir -Force
 Remove-Item $FlossbankZip

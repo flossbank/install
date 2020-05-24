@@ -11,16 +11,11 @@ async function getLatestReleaseFor (target) {
   return { url, version }
 }
 
-function getTargetlessText () {
-  const urls = targets.map(target => `<a href="?target=${target}">${target}</a>`).join(', ')
-  return `<html><head></head><body><p>target query param required: ${urls}<p></body></html>`
-}
-
 module.exports = async (req, res) => {
-  const { target } = req.query
-  if (!target) {
-    res.setHeader('Content-Type', 'text/html')
-    return res.status(200).send(getTargetlessText())
+  const { target: _target } = req.query
+  const target = (_target || '').toLowerCase()
+  if (!target || !targets.includes(target)) {
+    return res.status(404).send()
   }
   res.setHeader('Content-Type', 'text/plain')
   try {

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # TODO(everyone): Keep this script simple and easily auditable.
 # Thanks deno.land for inspiration <3
 #
@@ -36,7 +36,7 @@ if [ -z "$FLOSSBANK_INSTALL_TOKEN" ]; then
         err "Unable to run interactively. Run with FLOSSBANK_INSTALL_TOKEN=<token>."
     fi
     while [ -z "$FLOSSBANK_INSTALL_TOKEN" ]; do
-      read -p "Please enter install token to continue: " FLOSSBANK_INSTALL_TOKEN < /dev/tty
+      read -r -p "Please enter install token to continue: " FLOSSBANK_INSTALL_TOKEN < /dev/tty
     done
   fi
 fi
@@ -46,13 +46,24 @@ Darwin) target="macos-x86_64" ;;
 *) target="linux-x86_64" ;;
 esac
 
-if [ $(uname -m) != "x86_64" ]; then
+if [ "$(uname -m)" != "x86_64" ]; then
 	echo "Unsupported architecture $(uname -m). Only x64 binaries are available."
 	exit
 fi
 
-if [ ! -d "$bin_dir" ]; then
-	mkdir -p "$bin_dir"
+if ! command -v unzip >/dev/null; then
+	echo "Error: unzip is required to install Flossbank." 1>&2
+	exit 1
+fi
+
+if ! command -v curl >/dev/null; then
+	echo "Error: curl is required to install Flossbank." 1>&2
+	exit 1
+fi
+
+if ! command -v cut >/dev/null; then
+	echo "Error: cut is required to install Flossbank." 1>&2
+	exit 1
 fi
 
 echo
@@ -72,25 +83,21 @@ echo "You can uninstall at any time by executing 'flossbank uninstall'"
 echo "and these changes will be reverted."
 echo
 
-flossbank_asset_path=$(
-  command curl -sSLf https://github.com/flossbank/cli/releases/latest |
-    command grep -o "/flossbank/cli/releases/download/.*/flossbank-${target}\\.zip" |
-    command head -n 1
-)
-if [ ! "$flossbank_asset_path" ]; then
+flossbank_asset_info=$(command curl -sSLf "https://install.flossbank.com/releases/${target}")
+if [ ! "$flossbank_asset_info" ]; then
   echo
   echo "Error: unable to locate latest release on GitHub. Please try again or email support@flossbank.com for help!"
   exit 1
 fi
 
-flossbank_version=$(echo "$flossbank_asset_path" | cut -d'/' -f 6)
-flossbank_file_name=$(echo "$flossbank_asset_path" | cut -d'/' -f 7)
-
-flossbank_uri="https://github.com${flossbank_asset_path}"
+flossbank_uri=$(echo "$flossbank_asset_info" | head -n 1)
+flossbank_version=$(echo "$flossbank_asset_info" | tail -n 1)
+flossbank_file_name=$(echo "$flossbank_uri" | cut -d'/' -f 8)
 
 echo "Installing version: ${flossbank_version}"
 echo "  - Downloading ${flossbank_file_name}..."
 
+[ ! -d "$bin_dir" ] && mkdir -p "$bin_dir"
 curl -sS --fail --location --output "$exe.zip" "$flossbank_uri"
 cd "$bin_dir"
 unzip -qq -o "$exe.zip"
@@ -100,7 +107,7 @@ rm "$exe.zip"
 echo
 $exe install "$flossbank_install"
 $exe wrap all
-[ ! -z "$FLOSSBANK_INSTALL_TOKEN" ] && $exe auth "$FLOSSBANK_INSTALL_TOKEN"
+[ -n "$FLOSSBANK_INSTALL_TOKEN" ] && $exe auth "$FLOSSBANK_INSTALL_TOKEN"
 echo
 
 echo
