@@ -92,7 +92,7 @@ fi
 
 flossbank_uri=$(echo "$flossbank_asset_info" | head -n 1)
 flossbank_version=$(echo "$flossbank_asset_info" | tail -n 1)
-flossbank_file_name=$(echo "$flossbank_uri" | cut -d'/' -f 8)
+flossbank_file_name=$(echo "$flossbank_uri" | cut -d'/' -f 9)
 
 echo "Installing version: ${flossbank_version}"
 echo "  - Downloading ${flossbank_file_name}..."
