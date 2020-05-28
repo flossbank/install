@@ -1,8 +1,8 @@
 {
   "routes": [
     { "src": "/releases/(?<target>[^/]*)", "dest": "releases/index.js?target=$target" },
-    { "src": "/install.sh", "dest": "/install.sh", "headers": { "Content-Type": "text/plain" } },
-    { "src": "/install.ps1", "dest": "/install.ps1", "headers": { "Content-Type": "text/plain" } },
+    { "src": "/", "dest": "/install.sh", "headers": { "Content-Type": "text/plain" } },
+    { "src": "/ps1", "dest": "/install.ps1", "headers": { "Content-Type": "text/plain" } },
     { "src": ".*", "status": 303, "headers": { "Location": "https://flossbank.com" } }
   ],
   "builds": [
