@@ -20,6 +20,11 @@ module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'text/plain')
   try {
     const { url, version } = await getLatestReleaseFor(target)
+
+    // https://vercel.com/docs/v2/edge-network/headers#cache-control-header
+    // to avoid calling GitHub too many times, we're instructing Vercel to
+    // cache the 200 response of this route for 1 day
+    res.setHeader('s-maxage', 24 * 60 * 60)
     res.status(200).send(`${url}\n${version}`)
   } catch (e) {
     res.status(500).send()
