@@ -111,7 +111,8 @@ if ($needInstallToken) {
 }
 Write-Output ""
 
-if ($installCall.ExitCode -ne 0 -Or $wrapCall.ExitCode -ne 0 -Or $authCall.ExitCode -ne 0) {
+$authSuccess = ($authCall.ExitCode -eq 0) -Or !$needInstallToken
+if ($installCall.ExitCode -ne 0 -Or $wrapCall.ExitCode -ne 0 -Or !$authSuccess) {
   Write-Output ""
   Write-Output "Oh no :( we had trouble setting up Flossbank. Please try again or email support@flossbank.com for help!"
   return
