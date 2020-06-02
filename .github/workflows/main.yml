@@ -18,7 +18,7 @@ jobs:
         if: matrix.os == 'macOS-latest'
         run: |
           brew install shfmt shellcheck
-          shfmt -d .
+          shfmt -d install.sh
       - name: tests shell
         if: matrix.os != 'windows-latest'
         shell: bash
