@@ -27,7 +27,7 @@ $DefaultLocation = Join-Path $Home ".flossbank"
 if (Test-Path $DefaultLocation) {
   Remove-Item -Force -Recurse $DefaultLocation
 }
-$FLOSSBANK_INSTALL = ""
+$env:FLOSSBANK_INSTALL = ""
 .\install.ps1
 $Exe = Join-Path $DefaultLocation "bin" "flossbank"
 Start-Process $Exe -Wait -NoNewWindow -PassThru
@@ -37,7 +37,7 @@ $CustomLocation = Join-Path $Home "flossbank-custom"
 if (Test-Path $CustomLocation) {
   Remove-Item -Force -Recurse $CustomLocation
 }
-$FLOSSBANK_INSTALL = $CustomLocation
+$env:FLOSSBANK_INSTALL = $CustomLocation
 .\install.ps1
 $Exe = Join-Path $CustomLocation "bin" "flossbank"
 Start-Process $Exe -Wait -NoNewWindow -PassThru

@@ -79,8 +79,8 @@ if (!$Response) {
 }
 $FlossbankAssetInfo = $Response.Content
 
-$FlossbankUri = $FlossbankAssetInfo.Split([Environment]::NewLine)[0]
-$FlossbankVersion = $FlossbankAssetInfo.Split([Environment]::NewLine)[1]
+$FlossbankUri = $FlossbankAssetInfo.Split("`n")[0]
+$FlossbankVersion = $FlossbankAssetInfo.Split("`n")[1]
 $FlossbankFileName = $FlossbankUri.Split("/")[8]
 
 if (!(Test-Path $BinDir)) {
