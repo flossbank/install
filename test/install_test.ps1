@@ -24,7 +24,7 @@ $env:FLOSSBANK_INSTALL_TOKEN = "cf667c9381f7792bfa772025ff8ee93b89d9a757e6732e87
 
 # install the latest version at the default location
 $DefaultLocation = Join-Path $Home ".flossbank"
-if (!(Test-Path $DefaultLocation)) {
+if (Test-Path $DefaultLocation) {
   Remove-Item -Force -Recurse $DefaultLocation
 }
 $FLOSSBANK_INSTALL = ""
@@ -34,7 +34,7 @@ Start-Process $Exe -Wait -NoNewWindow -PassThru
 
 # install to a custom location
 $CustomLocation = Join-Path $Home "flossbank-custom"
-if (!(Test-Path $CustomLocation)) {
+if (Test-Path $CustomLocation) {
   Remove-Item -Force -Recurse $CustomLocation
 }
 $FLOSSBANK_INSTALL = $CustomLocation
