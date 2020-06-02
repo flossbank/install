@@ -18,18 +18,18 @@ jobs:
         if: matrix.os == 'macOS-latest'
         run: |
           brew install shfmt shellcheck
-          shfmt -d .
-      - name: tests shell
+          shfmt -d install.sh
+
+      - name: test shell
         if: matrix.os != 'windows-latest'
         shell: bash
         run: ./test/install_test.sh
 
-      - name: tests powershell
-        if: matrix.os == 'windows-latest'
-        shell: powershell
+      - name: test powershell core
+        shell: pwsh
         run: ./test/install_test.ps1
 
-      - name: tests powershell core
+      - name: test windows powershell
         if: matrix.os == 'windows-latest'
-        shell: pwsh
+        shell: powershell
         run: ./test/install_test.ps1
