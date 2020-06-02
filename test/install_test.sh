@@ -3,7 +3,7 @@
 set -e
 
 # lint
-shellcheck -s bash ../install.sh
+shellcheck -s bash ./install.sh
 
 # set staging api endpoint so we can use bogus install token
 MACOS_CONFIG="$HOME/Library/Preferences/flossbank-nodejs"
