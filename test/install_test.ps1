@@ -10,9 +10,9 @@ $LinuxConfigPath = if ($XDG_CONFIG_HOME) {
 }
 $MacConfigPath = Join-Path $Home "Library" "Preferences" "flossbank-nodejs"
 $WinConfigPath = Join-Path $Home "AppData" "Roaming" "flossbank-nodejs" "Config"
-New-Item $LinuxConfigPath -ItemType Directory | Out-Null
-New-Item $MacConfigPath -ItemType Directory | Out-Null
-New-Item $WinConfigPath -ItemType Directory | Out-Null
+New-Item $LinuxConfigPath -Force -ItemType Directory | Out-Null
+New-Item $MacConfigPath -Force -ItemType Directory | Out-Null
+New-Item $WinConfigPath -Force -ItemType Directory | Out-Null
 $LinuxConfig = Join-Path $LinuxConfigPath "config.json"
 $MacConfig = Join-Path $MacConfigPath "config.json"
 $WinConfig = Join-Path $WinConfigPath "config.json"
