@@ -3,19 +3,19 @@
 $ErrorActionPreference = 'Stop'
 
 # set staging api endpoint so we can use bogus install token
-$LinuxConfigPath = if ($XDG_CONFIG_HOME) {
-  Join-Path $XDG_CONFIG_HOME ".config" "flossbank-nodejs"
+$LinuxConfigPath = if ($env:XDG_CONFIG_HOME) {
+  Join-Path -Path "$env:XDG_CONFIG_HOME" -ChildPath ".config" | Join-Path -ChildPath "flossbank-nodejs"
 } else {
-  Join-Path $Home ".config" "flossbank-nodejs"
+  Join-Path -Path "$Home" -ChildPath ".config" | Join-Path -ChildPath "flossbank-nodejs"
 }
-$MacConfigPath = Join-Path $Home "Library" "Preferences" "flossbank-nodejs"
-$WinConfigPath = Join-Path $Home "AppData" "Roaming" "flossbank-nodejs" "Config"
+$MacConfigPath = Join-Path -Path "$Home" -ChildPath "Library" | Join-Path -ChildPath "Preferences" | Join-Path -ChildPath "flossbank-nodejs"
+$WinConfigPath = Join-Path -Path "$Home" -ChildPath "AppData" | Join-Path -ChildPath "Roaming" | Join-Path -ChildPath "flossbank-nodejs" | Join-Path -ChildPath "Config"
 New-Item $LinuxConfigPath -Force -ItemType Directory | Out-Null
 New-Item $MacConfigPath -Force -ItemType Directory | Out-Null
 New-Item $WinConfigPath -Force -ItemType Directory | Out-Null
-$LinuxConfig = Join-Path $LinuxConfigPath "config.json"
-$MacConfig = Join-Path $MacConfigPath "config.json"
-$WinConfig = Join-Path $WinConfigPath "config.json"
+$LinuxConfig = Join-Path -Path "$LinuxConfigPath" -ChildPath "config.json"
+$MacConfig = Join-Path -Path "$MacConfigPath" -ChildPath "config.json"
+$WinConfig = Join-Path -Path "$WinConfigPath" -ChildPath "config.json"
 Write-Output '{"apiHost":"https://api.flossbank.io"}' > $LinuxConfig
 Write-Output '{"apiHost":"https://api.flossbank.io"}' > $MacConfig
 Write-Output '{"apiHost":"https://api.flossbank.io"}' > $WinConfig
@@ -29,7 +29,7 @@ if (Test-Path $DefaultLocation) {
 }
 $env:FLOSSBANK_INSTALL = ""
 .\install.ps1
-$Exe = Join-Path $DefaultLocation "bin" "flossbank"
+$Exe = Join-Path -Path $DefaultLocation -ChildPath "bin" | Join-Path -ChildPath "flossbank"
 Start-Process $Exe -Wait -NoNewWindow -PassThru
 
 # install to a custom location
@@ -39,5 +39,5 @@ if (Test-Path $CustomLocation) {
 }
 $env:FLOSSBANK_INSTALL = $CustomLocation
 .\install.ps1
-$Exe = Join-Path $CustomLocation "bin" "flossbank"
+$Exe = Join-Path -Path $CustomLocation -ChildPath "bin" | Join-Path -ChildPath "flossbank"
 Start-Process $Exe -Wait -NoNewWindow -PassThru

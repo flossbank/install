@@ -22,7 +22,7 @@ $ErrorActionPreference = 'Stop'
 
 $FlossbankInstall = $env:FLOSSBANK_INSTALL
 if (!$FlossbankInstall) {
-  $FlossbankInstall = Join-Path $Home ".flossbank"
+  $FlossbankInstall = Join-Path -Path "$Home" -ChildPath ".flossbank"
 }
 
 if ($PSVersionTable.PSEdition -ne 'Core' -Or $IsWindows) {
@@ -39,9 +39,9 @@ if ($PSVersionTable.PSEdition -ne 'Core' -Or $IsWindows) {
   }
 }
 
-$BinDir = Join-Path $FlossbankInstall "bin"
-$FlossbankZip = Join-Path $BinDir "flossbank.zip"
-$FlossbankExe = Join-Path $BinDir $ExeName
+$BinDir = Join-Path -Path "$FlossbankInstall" -ChildPath "bin"
+$FlossbankZip = Join-Path -Path "$BinDir" -ChildPath "flossbank.zip"
+$FlossbankExe = Join-Path -Path "$BinDir" -ChildPath "$ExeName"
 
 $FlossbankInstallToken = $env:FLOSSBANK_INSTALL_TOKEN
 if (!(Test-Path $FlossbankExe)) {
@@ -118,7 +118,7 @@ if ($installCall.ExitCode -ne 0 -Or $wrapCall.ExitCode -ne 0 -Or !$authSuccess) 
   return
 }
 
-$envFile = Join-Path $FlossbankInstall "env.ps1"
+$envFile = Join-Path -Path "$FlossbankInstall" -ChildPath "env.ps1"
 . $envFile
 
 Write-Output ""
