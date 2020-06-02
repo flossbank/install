@@ -25,20 +25,20 @@ bin_dir="$flossbank_install/bin"
 exe="$bin_dir/flossbank"
 
 if [ -z "$FLOSSBANK_INSTALL_TOKEN" ]; then
-  # We might not need an install token: Flossbank might already be installed
-  # and an API key may already be configured. So we'll check that here.
-  if [ ! -x "$exe" ] || ! "$exe" check; then
-    # The installer needs a token and it isn't present as an env var.
-    # When we ask for the user to type it in, this script will try to read
-    # from stdin. But this script was piped into `sh`. Instead we're going
-    # to explicitly connect /dev/tty to the installer's stdin, ala https://sh.rustup.rs.
-    if [ ! -t 1 ]; then
-        err "Unable to run interactively. Run with FLOSSBANK_INSTALL_TOKEN=<token>."
-    fi
-    while [ -z "$FLOSSBANK_INSTALL_TOKEN" ]; do
-      read -r -p "Please enter install token to continue: " FLOSSBANK_INSTALL_TOKEN < /dev/tty
-    done
-  fi
+	# We might not need an install token: Flossbank might already be installed
+	# and an API key may already be configured. So we'll check that here.
+	if [ ! -x "$exe" ] || ! "$exe" check; then
+		# The installer needs a token and it isn't present as an env var.
+		# When we ask for the user to type it in, this script will try to read
+		# from stdin. But this script was piped into `sh`. Instead we're going
+		# to explicitly connect /dev/tty to the installer's stdin, ala https://sh.rustup.rs.
+		if [ ! -t 1 ]; then
+			err "Unable to run interactively. Run with FLOSSBANK_INSTALL_TOKEN=<token>."
+		fi
+		while [ -z "$FLOSSBANK_INSTALL_TOKEN" ]; do
+			read -r -p "Please enter install token to continue: " FLOSSBANK_INSTALL_TOKEN </dev/tty
+		done
+	fi
 fi
 
 case $(uname -s) in
@@ -85,9 +85,9 @@ echo
 
 flossbank_asset_info=$(command curl -sSLf "https://install.flossbank.com/releases/${target}")
 if [ ! "$flossbank_asset_info" ]; then
-  echo
-  echo "Error: unable to locate latest release on GitHub. Please try again or email support@flossbank.com for help!"
-  exit 1
+	echo
+	echo "Error: unable to locate latest release on GitHub. Please try again or email support@flossbank.com for help!"
+	exit 1
 fi
 
 flossbank_uri=$(echo "$flossbank_asset_info" | head -n 1)
