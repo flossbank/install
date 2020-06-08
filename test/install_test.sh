@@ -6,8 +6,8 @@ set -e
 shellcheck -s bash ./install.sh
 
 # set staging api endpoint so we can use bogus install token
-MACOS_CONFIG="$HOME/Library/Preferences/flossbank-nodejs"
-LINUX_CONFIG="${XDG_CONFIG_HOME:-$HOME}/.config/flossbank-nodejs"
+MACOS_CONFIG="$HOME/Library/Preferences/flossbank"
+LINUX_CONFIG="${XDG_CONFIG_HOME:-$HOME}/.config/flossbank"
 mkdir -p "$MACOS_CONFIG"
 mkdir -p "$LINUX_CONFIG"
 echo '{"apiHost":"https://api.flossbank.io"}' > "$MACOS_CONFIG/config.json"

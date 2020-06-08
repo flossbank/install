@@ -4,12 +4,12 @@ $ErrorActionPreference = 'Stop'
 
 # set staging api endpoint so we can use bogus install token
 $LinuxConfigPath = if ($env:XDG_CONFIG_HOME) {
-  Join-Path -Path "$env:XDG_CONFIG_HOME" -ChildPath ".config" | Join-Path -ChildPath "flossbank-nodejs"
+  Join-Path -Path "$env:XDG_CONFIG_HOME" -ChildPath ".config" | Join-Path -ChildPath "flossbank"
 } else {
-  Join-Path -Path "$Home" -ChildPath ".config" | Join-Path -ChildPath "flossbank-nodejs"
+  Join-Path -Path "$Home" -ChildPath ".config" | Join-Path -ChildPath "flossbank"
 }
-$MacConfigPath = Join-Path -Path "$Home" -ChildPath "Library" | Join-Path -ChildPath "Preferences" | Join-Path -ChildPath "flossbank-nodejs"
-$WinConfigPath = Join-Path -Path "$Home" -ChildPath "AppData" | Join-Path -ChildPath "Roaming" | Join-Path -ChildPath "flossbank-nodejs" | Join-Path -ChildPath "Config"
+$MacConfigPath = Join-Path -Path "$Home" -ChildPath "Library" | Join-Path -ChildPath "Preferences" | Join-Path -ChildPath "flossbank"
+$WinConfigPath = Join-Path -Path "$Home" -ChildPath "AppData" | Join-Path -ChildPath "Roaming" | Join-Path -ChildPath "flossbank" | Join-Path -ChildPath "Config"
 New-Item $LinuxConfigPath -Force -ItemType Directory | Out-Null
 New-Item $MacConfigPath -Force -ItemType Directory | Out-Null
 New-Item $WinConfigPath -Force -ItemType Directory | Out-Null
