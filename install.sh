@@ -18,7 +18,21 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-set -e
+set -eo pipefail
+
+BOLD="$(tput bold 2>/dev/null || echo '')"
+RED="$(tput setaf 1 2>/dev/null || echo '')"
+YELLOW="$(tput setaf 3 2>/dev/null || echo '')"
+MAGENTA="$(tput setaf 5 2>/dev/null || echo '')"
+NO_COLOR="$(tput sgr0 2>/dev/null || echo '')"
+
+info() {
+	printf "%s\n" "${BOLD}$*${NO_COLOR}"
+}
+
+error() {
+	printf "%s\n" "${RED}x $*${NO_COLOR}" >&2
+}
 
 flossbank_install="${FLOSSBANK_INSTALL:-$HOME/.flossbank}"
 bin_dir="$flossbank_install/bin"
@@ -33,10 +47,10 @@ if [ -z "$FLOSSBANK_INSTALL_TOKEN" ]; then
 		# from stdin. But this script was piped into `sh`. Instead we're going
 		# to explicitly connect /dev/tty to the installer's stdin, ala https://sh.rustup.rs.
 		if [ ! -t 1 ]; then
-			err "Unable to run interactively. Run with FLOSSBANK_INSTALL_TOKEN=<token>."
+			error "Unable to run interactively. Run with FLOSSBANK_INSTALL_TOKEN=<token>."
 		fi
 		while [ -z "$FLOSSBANK_INSTALL_TOKEN" ]; do
-			read -r -p "Please enter install token to continue: " FLOSSBANK_INSTALL_TOKEN </dev/tty
+			read -r -p "${BOLD}Please enter install token to continue: ${NO_COLOR}" FLOSSBANK_INSTALL_TOKEN </dev/tty
 		done
 	fi
 fi
@@ -47,34 +61,34 @@ Darwin) target="macos-x86_64" ;;
 esac
 
 if [ "$(uname -m)" != "x86_64" ]; then
-	echo "Unsupported architecture $(uname -m). Only x64 binaries are available."
+	error "Unsupported architecture $(uname -m). Only x64 binaries are available."
 	exit
 fi
 
 if ! command -v unzip >/dev/null; then
-	echo "Error: unzip is required to install Flossbank." 1>&2
+	error "Error: unzip is required to install Flossbank." 1>&2
 	exit 1
 fi
 
 if ! command -v curl >/dev/null; then
-	echo "Error: curl is required to install Flossbank." 1>&2
+	error "Error: curl is required to install Flossbank." 1>&2
 	exit 1
 fi
 
 if ! command -v cut >/dev/null; then
-	echo "Error: cut is required to install Flossbank." 1>&2
+	error "Error: cut is required to install Flossbank." 1>&2
 	exit 1
 fi
 
 echo
-echo "Welcome to Flossbank!"
+info "Welcome to Flossbank!"
 echo
 echo "This script will download and install the latest version of Flossbank,"
 echo "a package manager wrapper that helps compensate open source maintainers."
 echo
 echo "It will add the 'flossbank' command to Flossbank's bin directory, located at:"
 echo
-echo "${bin_dir}"
+echo "${YELLOW}${bin_dir}${NO_COLOR}"
 echo
 echo "This path will then be added to your PATH environment variable by"
 echo "modifying your shell profile/s."
@@ -86,7 +100,7 @@ echo
 flossbank_asset_info=$(command curl -sSLf "https://install.flossbank.com/releases/${target}")
 if [ ! "$flossbank_asset_info" ]; then
 	echo
-	echo "Error: unable to locate latest release on GitHub. Please try again or email support@flossbank.com for help!"
+	error "Error: unable to locate latest release on GitHub. Please try again or email support@flossbank.com for help!"
 	exit 1
 fi
 
@@ -94,8 +108,8 @@ flossbank_uri=$(echo "$flossbank_asset_info" | head -n 1)
 flossbank_version=$(echo "$flossbank_asset_info" | tail -n 1)
 flossbank_file_name=$(echo "$flossbank_uri" | cut -d'/' -f 9)
 
-echo "Installing version: ${flossbank_version}"
-echo "  - Downloading ${flossbank_file_name}..."
+echo "Installing version: ${YELLOW}${flossbank_version}${NO_COLOR}"
+echo "  - Downloading ${YELLOW}${flossbank_file_name}${NO_COLOR}..."
 
 [ ! -d "$bin_dir" ] && mkdir -p "$bin_dir"
 curl -sS --fail --location --output "$exe.zip" "$flossbank_uri"
@@ -111,11 +125,11 @@ $exe wrap all
 echo
 
 echo
-echo "Flossbank (${flossbank_version}) is now installed and registered. Great!"
+info "Flossbank (${flossbank_version}) is now installed and registered. Great!"
 echo
 echo "To get started, you need Flossbank's bin directory (${bin_dir}) in your 'PATH'"
 echo "environment variable. Next time you log in this will be done"
 echo "automatically."
 echo
-echo "To configure your current shell run 'source ${flossbank_install}/env'"
+info "To configure your current shell run ${MAGENTA}source ${flossbank_install}/env${NO_COLOR}"
 echo
