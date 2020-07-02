@@ -14,6 +14,7 @@ echo '{"apiHost":"https://api.flossbank.io"}' > "$MACOS_CONFIG/config.json"
 echo '{"apiHost":"https://api.flossbank.io"}' > "$LINUX_CONFIG/config.json"
 
 export FLOSSBANK_INSTALL_TOKEN="cf667c9381f7792bfa772025ff8ee93b89d9a757e6732e87611a0c34b48357d1"
+export FLOSSBANK_CONFIRM=1 # skipping the "Press any key to continue..." prompt during installation
 
 # install the latest version at the default location
 rm -f ~/.flossbank/bin/flossbank
