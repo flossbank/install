@@ -47,7 +47,7 @@ if [ -z "$FLOSSBANK_INSTALL_TOKEN" ]; then
 		# from stdin. But this script was piped into `sh`. Instead we're going
 		# to explicitly connect /dev/tty to the installer's stdin, ala https://sh.rustup.rs.
 		if [ ! -t 1 ]; then
-			error "Unable to run interactively. Run with FLOSSBANK_INSTALL_TOKEN=<token>."
+			error "unable to run interactively. run with flossbank_install_token=<token>."
 		fi
 		while [ -z "$FLOSSBANK_INSTALL_TOKEN" ]; do
 			read -r -p "${BOLD}Please enter install token to continue: ${NO_COLOR}" FLOSSBANK_INSTALL_TOKEN </dev/tty
@@ -96,6 +96,10 @@ echo
 echo "You can uninstall at any time by executing 'flossbank uninstall'"
 echo "and these changes will be reverted."
 echo
+
+if [ -t 1 ]; then
+	read -n 1 -s -r -p "Press any key to continue..." < /dev/tty
+fi
 
 flossbank_asset_info=$(command curl -sSLf "https://install.flossbank.com/releases/${target}")
 if [ ! "$flossbank_asset_info" ]; then
