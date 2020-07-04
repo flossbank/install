@@ -71,6 +71,10 @@ Write-Output "You can uninstall at any time by executing 'flossbank uninstall'"
 Write-Output "and these changes will be reverted."
 Write-Output ""
 
+if (!$env:FLOSSBANK_CONFIRM) {
+	Read-Host -Prompt 'Press return key to continue...'
+}
+
 $Response = Invoke-WebRequest "https://install.flossbank.com/releases/$Target" -UseBasicParsing
 if (!$Response) {
   Write-Output ""

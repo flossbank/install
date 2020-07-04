@@ -21,6 +21,7 @@ Write-Output '{"apiHost":"https://api.flossbank.io"}' > $MacConfig
 Write-Output '{"apiHost":"https://api.flossbank.io"}' > $WinConfig
 
 $env:FLOSSBANK_INSTALL_TOKEN = "cf667c9381f7792bfa772025ff8ee93b89d9a757e6732e87611a0c34b48357d1"
+$env:FLOSSBANK_CONFIRM = 1 # skipping the "Press any key to continue..." prompt during installation
 
 # install the latest version at the default location
 $DefaultLocation = Join-Path $Home ".flossbank"

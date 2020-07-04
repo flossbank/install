@@ -97,6 +97,12 @@ echo "You can uninstall at any time by executing 'flossbank uninstall'"
 echo "and these changes will be reverted."
 echo
 
+if [ ! "$FLOSSBANK_CONFIRM" ]; then
+	if [ -t 1 ]; then
+		read -n 1 -s -r -p "Press any key to continue..." </dev/tty
+	fi
+fi
+
 flossbank_asset_info=$(command curl -sSLf "https://install.flossbank.com/releases/${target}")
 if [ ! "$flossbank_asset_info" ]; then
 	echo
