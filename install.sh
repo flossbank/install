@@ -100,6 +100,7 @@ echo
 if [ ! "$FLOSSBANK_CONFIRM" ]; then
 	if [ -t 1 ]; then
 		read -n 1 -s -r -p "Press any key to continue..." </dev/tty
+		echo
 	fi
 fi
 
