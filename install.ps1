@@ -104,9 +104,9 @@ if ($IsMacOS -Or $IsLinux) {
 }
 
 Write-Output ""
-$InstallArgs = "install", "'$FlossbankInstall'"
+$InstallArgs = "install", "`"$FlossbankInstall`""
 $WrapArgs = "wrap", "all"
-$AuthArgs = "auth", "'$FlossbankInstallToken'"
+$AuthArgs = "auth", "$FlossbankInstallToken"
 
 $installCall = Start-Process $FlossbankExe -ArgumentList $InstallArgs -Wait -NoNewWindow -PassThru
 $wrapCall = Start-Process $FlossbankExe -ArgumentList $WrapArgs -Wait -NoNewWindow -PassThru
