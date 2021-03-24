@@ -1,0 +1,17 @@
+[[redirects]]
+  from = "/releases/:target"
+  to = "/.netlify/functions/releases/:target"
+
+[[redirects]]
+  from = "/"
+  to = "/install.sh"
+  status = 200
+  [redirects.headers]
+    Content-Type = "text/plain"
+
+[[redirects]]
+  from = "/ps"
+  to = "/install.ps1"
+  status = 200
+  [redirects.headers]
+    Content-Type = "text/plain"
